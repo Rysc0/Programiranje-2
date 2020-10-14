@@ -56,7 +56,7 @@ void ispis(pisac_t *head){
     cout << "Zbroj kljuceva = " << zbroj_kljuceva << endl;
 }
 
-void findNode(pisac_t *head, int sifra){
+pisac_t *findNode(pisac_t *head, int sifra){
     pisac_t *temp = head;
     while(temp != NULL){
         if(temp->sifra == sifra){
@@ -64,15 +64,41 @@ void findNode(pisac_t *head, int sifra){
             cout << temp->sifra << "\t" << temp->ime_prez << "\t" << temp->naslov 
             << "\t" << temp->vrijeme_unosa << endl;
             cout << "-------------------------------------------------" << endl;
-            break;
+            return temp;
         }
         else{
             temp = temp->next;
         }
         if(temp == NULL){
             cout << "Ne postoji takav zapis!" << endl;
+            return 0;
         }
     }
+    return 0;
+}
+
+
+void deleteNode(pisac_t *head, int sifra){
+    pisac_t *temp = findNode(head,sifra);
+    if(temp == NULL){
+        cout << "Lista je prazna" << endl;
+    }
+    // pisac_t *temporary = head;
+    while(head != NULL){
+        if(head->next == temp && head->next->sifra == sifra){
+            head->next = temp->next;
+            delete temp;
+            cout << "Node deleted!" << endl;
+        }
+        head = head->next;
+    }
+}
+
+int unesi_kljuc(){
+    int sifra;
+    cout << "Unesite kljuc: ";
+    cin >> sifra;
+    return sifra;
 }
 
 // typedef pisac_t lista;
@@ -102,16 +128,15 @@ do{
             ispis(head);
             break;
         case 3:
-            int sifra;
-            cout << "Unesite kljuc: ";
-            cin >> sifra;
-            findNode(head,sifra);
+            // int sifra;
+            // cout << "Unesite kljuc: ";
+            // cin >> sifra;
+            // unesi_kljuc();
+            findNode(head,unesi_kljuc());
             break;
         case 4:
-            //funkcija
-            break;
-        case 9:
-            //funkcija
+            // unesi_kljuc();
+            deleteNode(head,unesi_kljuc());
             break;
     }
 }while(jos != 9);
