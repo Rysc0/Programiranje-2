@@ -37,17 +37,41 @@ pisac_t *addToList(pisac_t *head){
 
 void ispis(pisac_t *head){
     int sec;
+    int zbroj_kljuceva = 0;
     cout << "Displaying list...";
-    for(int i = 0; i < 10; i++){
-        sec = rand()%3;
+    for(int i = 0; i < 5; i++){
+        sec = rand()%2;
         cout << ".";
         sleep(sec);
     }
     cout << endl;
     while(head != NULL){
-        cout << head->sifra << "\n" << head->ime_prez << "\n" << head->naslov 
-        << "\n" << head->vrijeme_unosa << endl << endl;
+        cout << "-------------------------------------------------" << endl;
+        cout << head->sifra << "\t" << head->ime_prez << "\t" << head->naslov 
+        << "\t" << head->vrijeme_unosa << endl << endl;
+        zbroj_kljuceva += head->sifra;
         head = head->next;
+        cout << "Sljedeca adresa: " << head << endl;
+    }
+    cout << "Zbroj kljuceva = " << zbroj_kljuceva << endl;
+}
+
+void findNode(pisac_t *head, int sifra){
+    pisac_t *temp = head;
+    while(temp != NULL){
+        if(temp->sifra == sifra){
+            cout << "-------------------------------------------------" << endl;
+            cout << temp->sifra << "\t" << temp->ime_prez << "\t" << temp->naslov 
+            << "\t" << temp->vrijeme_unosa << endl;
+            cout << "-------------------------------------------------" << endl;
+            break;
+        }
+        else{
+            temp = temp->next;
+        }
+        if(temp == NULL){
+            cout << "Ne postoji takav zapis!" << endl;
+        }
     }
 }
 
@@ -78,7 +102,10 @@ do{
             ispis(head);
             break;
         case 3:
-            //funkcija
+            int sifra;
+            cout << "Unesite kljuc: ";
+            cin >> sifra;
+            findNode(head,sifra);
             break;
         case 4:
             //funkcija
