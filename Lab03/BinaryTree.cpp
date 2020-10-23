@@ -3,12 +3,105 @@
 using namespace std;
  
 
+struct pisac_t{
+    int sifra;
+    char ime_prez[50];
+    char naslov[50];
+    double vrijeme_unosa;
+    pisac_t *left;
+    pisac_t *right;
+};
+
+void add_to_list_at_end(pisac_t *head){
+    pisac_t *current = head;
+    pisac_t *novi;
+
+    while(current->right){
+        current = current->right;
+    }
+
+    novi = new pisac_t;
+    novi->left = current;
+    novi->right = NULL;
+    current->right = novi;
+    vrijeme_pocetak();
+    cout << "Unesi sifru autora: ";
+    cin >> novi->sifra;
+    cout << "Unesi ime i prezime autora: ";
+    unos(novi->ime_prez);
+    cout << "Unesi naslov djela: ";
+    unos(novi->naslov);
+    vrijeme_kraj();
+    novi->vrijeme_unosa = vrijeme_proteklo()/1000;
+
+
+
+    while(head->right != NULL){
+        cout <<"----------------------------------------------------------------------" << endl;
+        cout << "Sifra autora: " << head->sifra << endl;
+        cout << "Ime i prezime: " << head->ime_prez << endl;
+        cout << "Naslov: " << head->naslov << endl;
+        cout << "Vrijeme unosa: " << head->vrijeme_unosa << endl;
+        cout <<"----------------------------------------------------------------------" << endl;
+        head = head->right; 
+    }
+
+}
+
+
+void add_to_list_at_start(pisac_t *head){
+
+    if(head->right == NULL){
+        add_to_list_at_end(head);
+        return;
+    }
+
+    else{
+        pisac_t *current = head->right;
+        pisac_t *novi = new pisac_t;
+
+        vrijeme_pocetak();
+        cout << "Unesi sifru autora: ";
+        cin >> novi->sifra;
+        cout << "Unesi ime i prezime autora: ";
+        unos(novi->ime_prez);
+        cout << "Unesi naslov: ";
+        unos(novi->naslov);
+        vrijeme_kraj();
+        novi->vrijeme_unosa = vrijeme_proteklo()/1000;
+
+        novi->left = head;
+        novi->right = current;
+        head->right = novi;
+        current->left = novi;
+
+        pisac_t *tail;
+        while(current){
+            current = current->right;
+        }
+        tail = current;
+
+        while(tail->left){
+            cout <<"----------------------------------------------------------------------" << endl;
+            cout << "Sifra autora: " << head->sifra << endl;
+            cout << "Ime i prezime: " << head->ime_prez << endl;
+            cout << "Naslov: " << head->naslov << endl;
+            cout << "Vrijeme unosa: " << head->vrijeme_unosa << endl;
+            cout <<"----------------------------------------------------------------------" << endl;
+            tail = tail->left;
+        }
+
+    }
+    
+}
 
 
 
 int main(){
 
-
+pisac_t *head = new pisac_t;
+head->left = NULL;
+head->right = NULL;
 
 
 int jos;
@@ -23,10 +116,10 @@ do{
     cin >> jos;
     switch(jos){
         case 1:
-            
+            add_to_list_at_end(head);
             break;
         case 2:
-            
+            add_to_list_at_start(head);
             break;
         case 3:
             
