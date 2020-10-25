@@ -130,7 +130,64 @@ void deleteNode(pisac_t *head, int sifra){
 }
 
 // print binary tree
+void print_tree(pisac_t *root){
+    static pisac_t *korijen = root;
+    if(root == NULL){
+        return;
+    }
+    print_tree(root->prev);
+    if(root!=korijen){
+        cout <<"----------------------------------------------------------------------" << endl;
+        cout << root->sifra << "\t" << root->ime_prez << "\t" << root->naslov << "\t" 
+            << root->vrijeme_unosa << "\t" << root->next << endl;
+        cout <<"----------------------------------------------------------------------" << endl;
+    }
+    print_tree(root->next);
+}
+
 // add note to binary tree
+void add_to_binary_tree(pisac_t *root){
+    pisac_t *help = root;
+    bool failed = true;
+
+    pisac_t *novi = new pisac_t;
+    cout << "UNOS U BINARNO STABLO" << endl;
+    vrijeme_pocetak();
+    cout << "Unesi sifru autora: ";
+    cin >> novi->sifra;
+    cout << "Unesi ime i prezime autora: ";
+    unos(novi->ime_prez);
+    cout << "Unesi naslov: ";
+    unos(novi->naslov);
+    vrijeme_kraj();
+    novi->vrijeme_unosa = vrijeme_proteklo()/1000;
+
+    do{
+        if(novi->sifra > help->sifra){
+            if(help->next != NULL){
+                help = help->next;
+            }
+            else{
+                help->next = novi;
+                novi->next = NULL;
+                novi->prev = NULL;
+                failed = false;
+            }
+        }
+        else{
+            if(help->prev != NULL){
+                help = help->prev;
+            }
+            else{
+                help->prev = novi;
+                novi->prev = NULL;
+                novi->next = NULL;
+                failed = false;
+            }
+        }
+    }while(failed == true);
+}
+
 
 int kljuc(){
     int sifra;
@@ -142,9 +199,15 @@ int kljuc(){
 
 int main(){
 
+// head pointer for doubly linked list
 pisac_t *head = new pisac_t;
 head->next = NULL;
 head->prev = NULL;
+
+// root pointer for binary tree
+pisac_t *root = new pisac_t;
+root->next = NULL; // using it as root right
+root->prev = NULL; // using it as root left
 
 int jos;
 do{
@@ -153,6 +216,7 @@ do{
     cout << "2. Dodavanje elementa na početak dvostruko vezane liste, ispis liste od kraja" << endl;
     cout << "3. Brisanje čvora iz dvostruko vezane liste" << endl;
     cout << "4. Dodavanje novog čvora u binarno stablo, ispis čvorova stabla" << endl;
+    cout << "5. Brisanje cvora iz binarnog stabla, ispis cvorova" << endl;
     cout << "9. Izlaz iz programa" << endl;
     cout <<"----------------------------------------------------------------------" << endl;
     cin >> jos;
@@ -169,6 +233,11 @@ do{
             ispis_head(head);
             break;
         case 4:
+            add_to_binary_tree(root);
+            print_tree(root);
+            break;
+        case 5:
+            // delete node from tree
             break;
     }
 }while(jos != 9);
