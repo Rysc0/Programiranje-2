@@ -14,13 +14,12 @@ struct pisac_t{
 // print from head
 void ispis_head(pisac_t *head){
     pisac_t *current = head ->next;
+    cout << "Sifra" << "\t" << "Ime i prezime" << "\t" << "Naslov" << "\t" 
+        << "Vrijeme unosa" << "\t" << "Next addr" << endl;
     while(current != NULL){
         cout <<"----------------------------------------------------------------------" << endl;
-        cout << "Sifra autora: " << current->sifra << endl;
-        cout << "Ime i prezime: " << current->ime_prez << endl;
-        cout << "Naslov: " << current->naslov << endl;
-        cout << "Vrijeme unosa: " << current->vrijeme_unosa << endl;
-        cout << "Next addr: " << current->next << endl;
+        cout << current->sifra << "\t" << current->ime_prez << "\t" << current->naslov << "\t" 
+            << current->vrijeme_unosa << "\t" << current->next << endl;
         cout <<"----------------------------------------------------------------------" << endl;
         current = current->next; 
     }
@@ -58,13 +57,12 @@ void ispis_tail(pisac_t *head){
     while(temp->next){
         temp = temp->next;
     }
+     cout << "Sifra" << "\t" << "Ime i prezime" << "\t" << "Naslov" << "\t" 
+        << "Vrijeme unosa" << "\t" << "Next addr" << endl;
     while(temp != head){
         cout <<"----------------------------------------------------------------------" << endl;
-        cout << "Sifra autora: " << temp->sifra << endl;
-        cout << "Ime i prezime: " << temp->ime_prez << endl;
-        cout << "Naslov: " << temp->naslov << endl;
-        cout << "Vrijeme unosa: " << temp->vrijeme_unosa << endl;
-        cout << "Prev addr: " << temp->next << endl;
+        cout << temp->sifra << "\t" << temp->ime_prez << "\t" << temp->naslov << "\t" 
+            << temp->vrijeme_unosa << "\t" << temp->next << endl;
         cout <<"----------------------------------------------------------------------" << endl;
         temp = temp->prev; 
     }
@@ -94,17 +92,54 @@ void add_at_start(pisac_t *head){
         novi->next = current; // novi element -> current
         head->next = novi;
         current->prev = novi; // head -> novi element
-        // head->left = NULL;
-        // current->prev = novi; // novi element <- curren
+        
     }
-    // ispis_tail(head);
+    cout << "ISPISUJEM..." << endl;
+    ispis_tail(head);
 }
 
 // delete node
+void deleteNode(pisac_t *head, int sifra){
+    pisac_t *current = head->next;
+    pisac_t *previous = head;
+
+    // find node that needs to be deleted
+    if(current == NULL){                        // do you really need this ???
+            cout << "Lista je prazna!" << endl;
+    }
+    else{
+        while(current != NULL){
+            if(current->sifra == sifra){
+                // change pointers
+                previous->next = current->next; // connect previous node to next node
+                current->prev = previous; // connect next node to previous
+                // delete node
+                delete current;
+                cout << "Node deleted" << endl;
+                break;
+            }
+            else{
+                current = current->next;
+                previous = previous->next;
+            }
+            if(current == NULL){                // do you really need this ???
+                cout << "Nema takvog zapisa!" << endl;
+            }
+        }
+    }
+}
 
 // print binary tree
 // add note to binary tree
- 
+
+int kljuc(){
+    int sifra;
+    cout << "Unesi sifru: ";
+    cin >> sifra;
+    return sifra;
+}
+
+
 int main(){
 
 pisac_t *head = new pisac_t;
@@ -127,13 +162,13 @@ do{
             break;
         case 2:
             add_at_start(head);
-            ispis_tail(head);
             break;
         case 3:
-           
+            deleteNode(head,kljuc());
+            cout << "ISPIS LISTE..." << endl;
+            ispis_head(head);
             break;
         case 4:
-            
             break;
     }
 }while(jos != 9);
