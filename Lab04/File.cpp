@@ -114,7 +114,7 @@ void pretraga(){
 int main(){
 
 int jos;
-// int jos_1;
+
 do{
     cout <<"----------------------------------------------------------------------" << endl;
     cout << "11. Unos podataka u datoteku " << endl;
