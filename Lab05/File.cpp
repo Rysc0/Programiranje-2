@@ -13,6 +13,9 @@ struct data_t{
     double vrijeme_unosa; // na jednu decimalu točnosti
 };
 
+fstream file;
+data_t podaci;
+
 bool prost(int x){
     bool prime = true;
     for(int i = 2; i < sqrt(x); i++){
@@ -51,9 +54,18 @@ void makeFile(){
         cout << "Koliko zapisa zelite? (Velicina datoteke): ";
         cin >> zapisa;
     }while(zapisa < 10 || prost(zapisa));
-    
+
     // kreirati datoteku praznih zapisa
+    podaci.ime_prez[0] = '\0';
+    podaci.naslov[0] = '\0';
+    file.open("file.dat", ios::out);
+    for(int i = 1; i < zapisa; i++){
+        podaci.sifra = i;
+        file.write((char *)&podaci,sizeof(podaci));
+    }
+
     // izračunati i ispisati prvi manji prosti broj od veličine datoteke (unesenog broja)
+    cout << "Prvi manji prosti broj od velicine datoteke je: " << manjiProst(zapisa) << endl;
 }
 
 void fileInput(){
