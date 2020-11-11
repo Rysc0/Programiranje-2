@@ -6,11 +6,11 @@
 using namespace std;
   
 struct data_t{
-    // int redni_br; ne treba jer ce sifra biti automatski i redni broj ??
+    int redni_br; // ne treba jer ce sifra biti automatski i redni broj ??
     int sifra;
     char ime_prez[50];
     char naslov[50];
-    double vrijeme_unosa; // na jednu decimalu točnosti
+    double vrijeme_unos; // na jednu decimalu točnosti
 };
 
 fstream file;
@@ -45,32 +45,60 @@ int manjiProst(int x){
     return 0;    
 }
 
+    int zapisa;
 void makeFile(){
     // traži od korisnika unos veličine datoteke praznih zapisa
     // ako je uneseni broj prost ili manji od 10 upiši ponovno
     // mora se unijet broj koji nije prost i koji je veći od 9
-    int zapisa;
     do{
         cout << "Koliko zapisa zelite? (Velicina datoteke): ";
         cin >> zapisa;
     }while(zapisa < 10 || prost(zapisa));
 
     // kreirati datoteku praznih zapisa
+    podaci.sifra = 0;
     podaci.ime_prez[0] = '\0';
     podaci.naslov[0] = '\0';
-    file.open("file.dat", ios::out);
+    file.open("file.dat", ios::out | ios::binary);
     for(int i = 1; i < zapisa; i++){
-        podaci.sifra = i;
+        podaci.redni_br = i; // nisam siguran da treba jer se opet određuje adresa zapisa 
         file.write((char *)&podaci,sizeof(podaci));
     }
 
     // izračunati i ispisati prvi manji prosti broj od veličine datoteke (unesenog broja)
     cout << "Prvi manji prosti broj od velicine datoteke je: " << manjiProst(zapisa) << endl;
+    file.close();
 }
 
 void fileInput(){
     // adresa zapisa ovisi o vrijednosti primarnog ključa, uz uvažavanje duplikata 
+    data_t podaci2, podaci3;
+    int redni_broj;
+    vrijeme_pocetak();
+    do{
+        cout << "Unesi sifru: ";
+        cin >> podaci2.sifra;
+    }while(podaci2.sifra < manjiProst(zapisa));
+    cout << "Unesi ime i prezime: ";
+    unos(podaci2.ime_prez);
+    cout << "Unesi naslov: ";
+    unos(podaci2.naslov);
+    vrijeme_kraj();
+    podaci2.vrijeme_unos = vrijeme_proteklo()/1000;
+
+    redni_broj = podaci2.sifra % manjiProst(zapisa);
+
+    file.open("file.dat",ios::in | ios::out | ios:: binary);
+    file.seekp(redni_broj * sizeof(data_t));
     // (ako je zapis na izračunatoj adresi popunjen, tada se traži prvi prazni zapis radi upisa)
+    do{
+        file.read((char *)&podaci3, sizeof(data_t));
+    }while(podaci3.sifra > 0);
+    redni_broj = (file.tellg() / sizeof(data_t))-1;
+    file.seekp(redni_broj * sizeof(data_t));
+    podaci2.redni_br = podaci3.redni_br;
+    file.write((char *)&podaci2, sizeof(data_t));
+    file.close();
 } 
 
 void pretraga(){
@@ -103,12 +131,13 @@ do{
             makeFile();
             break;
         case 2:
-            // functionž
-            cout << "PROST: " << prost(11) << endl;
+            // function
             fileInput();
             break;
         case 3:
             // function
+            cout << manjiProst(120);
+            return 0;
             pretraga();
             break;
         case 4:
