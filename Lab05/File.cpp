@@ -2,19 +2,56 @@
 // #include "biblioteka_vrijeme.cc"
 #include "biblioteka_tel_imenik.cc"
 #include <fstream>
+#include <cmath>
 using namespace std;
   
 struct data_t{
+    // int redni_br; ne treba jer ce sifra biti automatski i redni broj ??
     int sifra;
     char ime_prez[50];
     char naslov[50];
     double vrijeme_unosa; // na jednu decimalu točnosti
 };
 
+bool prost(int x){
+    bool prime = true;
+    for(int i = 2; i < sqrt(x); i++){
+        if(x % i == 0){
+            prime = false;
+            return false;
+        }
+    }
+    if(prime) return true;
+    return 0;
+}
+
+
+int manjiProst(int x){
+    int i,j;
+    bool prost;
+    for(i = x; i > 1; i--){
+        prost = true;
+        for(j = 2; j < sqrt(i); j++){
+            if(i % j == 0){
+                prost = false;
+                break;
+                }
+        }
+        if(prost) return i;
+    }
+    return 0;    
+}
+
 void makeFile(){
     // traži od korisnika unos veličine datoteke praznih zapisa
     // ako je uneseni broj prost ili manji od 10 upiši ponovno
     // mora se unijet broj koji nije prost i koji je veći od 9
+    int zapisa;
+    do{
+        cout << "Koliko zapisa zelite? (Velicina datoteke): ";
+        cin >> zapisa;
+    }while(zapisa < 10 || prost(zapisa));
+    
     // kreirati datoteku praznih zapisa
     // izračunati i ispisati prvi manji prosti broj od veličine datoteke (unesenog broja)
 }
@@ -54,7 +91,8 @@ do{
             makeFile();
             break;
         case 2:
-            // function
+            // functionž
+            cout << "PROST: " << prost(11) << endl;
             fileInput();
             break;
         case 3:
