@@ -74,42 +74,116 @@ void fileInput(){
     // adresa zapisa ovisi o vrijednosti primarnog ključa, uz uvažavanje duplikata 
     data_t podaci2, podaci3;
     int redni_broj;
-    vrijeme_pocetak();
-    do{
-        cout << "Unesi sifru: ";
-        cin >> podaci2.sifra;
-    }while(podaci2.sifra < manjiProst(zapisa));
-    cout << "Unesi ime i prezime: ";
-    unos(podaci2.ime_prez);
-    cout << "Unesi naslov: ";
-    unos(podaci2.naslov);
-    vrijeme_kraj();
-    podaci2.vrijeme_unos = vrijeme_proteklo()/1000;
+    // if(file.is_open()){
+        vrijeme_pocetak();
+        do{
+            cout << "Unesi sifru: ";
+            cin >> podaci2.sifra;
+        }while(podaci2.sifra < manjiProst(zapisa));
+        cout << "Unesi ime i prezime: ";
+        unos(podaci2.ime_prez);
+        cout << "Unesi naslov: ";
+        unos(podaci2.naslov);
+        vrijeme_kraj();
+        podaci2.vrijeme_unos = vrijeme_proteklo()/1000;
 
-    redni_broj = podaci2.sifra % manjiProst(zapisa);
+        redni_broj = podaci2.sifra % manjiProst(zapisa);
 
-    file.open("file.dat",ios::in | ios::out | ios:: binary);
-    file.seekp(redni_broj * sizeof(data_t));
-    // (ako je zapis na izračunatoj adresi popunjen, tada se traži prvi prazni zapis radi upisa)
-    do{
-        file.read((char *)&podaci3, sizeof(data_t));
-    }while(podaci3.sifra > 0);
-    redni_broj = (file.tellg() / sizeof(data_t))-1;
-    file.seekp(redni_broj * sizeof(data_t));
-    podaci2.redni_br = podaci3.redni_br;
-    file.write((char *)&podaci2, sizeof(data_t));
-    file.close();
+        file.open("file.dat",ios::in | ios::out | ios:: binary);
+        file.seekp(redni_broj * sizeof(data_t));
+        // (ako je zapis na izračunatoj adresi popunjen, tada se traži prvi prazni zapis radi upisa)
+        do{
+            file.read((char *)&podaci3, sizeof(data_t));
+        }while(podaci3.sifra > 0);
+
+        redni_broj = (file.tellg() / sizeof(data_t))-1;
+        file.seekp(redni_broj * sizeof(data_t));
+        podaci2.redni_br = podaci3.redni_br;
+        file.write((char *)&podaci2, sizeof(data_t));
+        file.close();
+    // }
+    // else cout << "Datoteka ne postoji!" << endl;
 } 
 
-void pretraga(){
+int sifra(){
+    int kljuc;
+    cout << "Unesi sifru: ";
+    cin >> kljuc;
+    return kljuc;
+}
+void pretraga(int kljuc){
     // unosi se vrijednost primarnog ključa. Ispisuju se svi atributi odgovarajućeg zapisa ako je nađen.
-    // Ispisati poruku ako se na izračunatoj adresi nalazi duplikat traženog zapisa!
+    int redni_broj;
+    int brojac = 0;
+    // if(file.is_open()){
+
+        file.open("file.dat",ios::in | ios::binary);
+        redni_broj = kljuc % manjiProst(zapisa);
+        file.seekg(redni_broj * sizeof(data_t));
+
+        cout << "Redni br\t" << "Sifra\t" << "Ime i prezime\t" << "Naslov\t" << "Vrijeme unosa" << endl;
+        do{
+            file.read((char *)&podaci, sizeof(data_t));
+            if(file.eof()) break;
+            if(podaci.sifra == kljuc){
+                brojac++;
+                if(brojac == 1){
+                    cout << podaci.redni_br << "\t" << podaci.sifra << "\t" << podaci.ime_prez << "\t" << podaci.naslov << "\t" << podaci.vrijeme_unos << endl;
+                }
+                // Ispisati poruku ako se na izračunatoj adresi nalazi duplikat traženog zapisa!
+                else cout << "Postoji duplikat!" << endl;
+                // break;
+            }
+        }while(podaci.sifra > 0);
+        file.close();
+
+        // kako impelementirati poruku da nije nađen zapis
+        if(brojac == 0) cout << "Nije pronadjen zapis!" << endl;
+        else cout << "Ukupno procitano zapisa: " << brojac << endl;
+    // }
+    // else cout << "Nema datoteke!" << endl;
 }
 
 void statistika(){
     // a.) Statistika: ispisati ukupan broj praznih zapisa u relativnoj datoteci
+    int br = 0;
+    int ukupno;
+    file.open("file.dat", ios::in | ios::binary);
+
+    do{
+        file.read((char *)&podaci, sizeof(data_t));
+        if(podaci.ime_prez[0] == '\0'){
+            br++;
+        }
+        
+    }while(!file.eof());
+    file.close();
+    // ukupno = zapisa - br;
+    cout << "Ukupno procitano " << br << " praznih zapisa!" << endl;
     // b.) Statistika: ispisati ukupan broj nepraznih zapisa u relativnoj datoteci
+    br = 0;
+     file.open("file.dat", ios::in | ios::binary);
+
+    do{
+        file.read((char *)&podaci, sizeof(data_t));
+        if(podaci.ime_prez[0] != '\0'){
+            br++;
+        }
+        
+    }while(!file.eof());
+    file.close();
+    cout << "Ukupno procitano " << br << " nepraznih zapisa!" << endl;
     // c.) Statistika: ispisati zbroj svih primarnih ključeva u relativnoj datoteci
+    int zbroj = 0;
+    file.open("file.dat", ios::in | ios::binary);
+
+    do{
+        file.read((char *)&podaci, sizeof(data_t));
+        zbroj += podaci.sifra;
+        
+    }while(!file.eof());
+    file.close();
+    cout << "Zbroj svih primarnih kljuceva je: " << zbroj << endl;
 }
 
 int main(){
@@ -136,9 +210,9 @@ do{
             break;
         case 3:
             // function
-            cout << manjiProst(120);
-            return 0;
-            pretraga();
+            // cout << manjiProst(120);
+            // return 0;
+            pretraga(sifra());
             break;
         case 4:
             // function
