@@ -28,27 +28,19 @@ bool fileCheck(){
     else return false;
 }
 
-void createFile(){
-    if(fileCheck()) cout << "File postoji!" << endl;
-    else {
-        file.open(name,ios::out | ios::binary);
-        file.close();
-        cout << "File kreiran!" << endl;
-    }
-//     file.open(name);
-//     file.close();
-//     if(!file){
-//         file.open(name,ios::out | ios::binary);
-//         file.close();
-//         cout << "File kreiran!" << endl;
-//     }
-//     else cout << "File postoji!" << endl;
+void createFile(){ 
+    file.open(name,ios::out | ios::binary);
+    file.close();
+    cout << "File kreiran!" << endl;
 }
 
 void input(){
-    createFile();
 
-    file.open(name,ios::out | ios::binary);
+    if(!fileCheck()){
+        createFile();
+    }
+
+    file.open(name,ios::app | ios::binary);
     cout << "Unesi sifru autora: ";
     cin >> zapis.sifra;
     cout << "Unesi ime autora: ";
@@ -74,18 +66,21 @@ void generiranje(){
         zapis.sifra = rand()%1000+rand()%1000;
             
         // generiranje imena i prezimena
-        for(int j = 0; j < 5; j++){
-            zapis.ime_prez[j] = char(rand()%26+65);
+        zapis.ime_prez[0] = char(rand()%26+65);
+        for(int j = 1; j < 6; j++){
+            zapis.ime_prez[j] = char(rand()%26+97);
         }
-        zapis.ime_prez[5] = ' ';
-        for(int j = 6; j < 10; j++){
-            zapis.ime_prez[j] = char(rand()%26+65);
+        zapis.ime_prez[6] = ' ';
+        zapis.ime_prez[7] = char(rand()%26+65);
+        for(int j = 8; j < 12; j++){
+            zapis.ime_prez[j] = char(rand()%26+97);
         }
-        zapis.ime_prez[10] = '\0';
+        zapis.ime_prez[12] = '\0';
 
         // generiranje naslova
-        for(int i = 0; i < 20; i++){
-            zapis.naslov[i] = char(rand()%26+65);
+        zapis.naslov[0] = char(rand()%26+65);
+        for(int i = 1; i < 20; i++){
+            zapis.naslov[i] = char(rand()%26+97);
         }
         zapis.naslov[20] = '\0';   
             
