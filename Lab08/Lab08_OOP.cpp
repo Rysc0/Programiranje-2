@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
+#include <windows.h> // Sleep()
 using namespace std;
 
 
@@ -25,23 +26,19 @@ class trokut{
 		}
 		
 		void unos_trokuta(){
-			//srand(time(NULL));
 			vrijeme_unosa.pocetak();
+			Sleep(rand()%100);
 			sifra_trokuta = rand()%1000+1;
 			a = rand()%10+1;
 			b = rand()%10+1;
 			c = rand()%10+1;
 			broj_unesenih++;
 			vrijeme_unosa.kraj();
-		
-		//	cin >>  sifra_trokuta >> a >> b >> c;
-
-		
 		}
 	
 		void ispis_trokuta(){
 			cout << sifra_trokuta << "\t" << a << "\t" << b << "\t" <<  c 
-			<<  "\t" << povrsina_trokuta() << "\t" << vrijeme_unosa.proteklo() << endl;
+			<<  "\t" << setprecision(3) << povrsina_trokuta() << "\t" << vrijeme_unosa.proteklo() << endl;
 		}
 		
 		int statistika(){
@@ -52,6 +49,32 @@ class trokut{
 			return broj_trokuta;
 			
 		}
+
+		void swap_pages(){
+			// make C the largest
+			int temp = 0;
+			for(int i = 0; i < 50; i++){
+				if(a > b && a > c){
+					temp = c;
+					c = a;
+					a = temp;
+				}
+				else if(b > c && b > a){
+					temp = c;
+					c = b;
+					b = temp;
+				}
+				else continue; 	
+			}
+		}
+
+		void pitagora(){
+			swap_pages();
+			float zbroj = sqrt(pow(a,2)+pow(b,2));
+			if(c == zbroj)
+				cout << sifra_trokuta << "\t" << a << "\t" << b << "\t" 
+				<< c << "\t" << setprecision(3) << povrsina_trokuta() << "\t" << vrijeme_unosa.proteklo() << endl;	
+		}
 };		
 
 		
@@ -60,13 +83,51 @@ int trokut::broj_unesenih = 0;
 
 trokut instanca[50];
 
+
+void input(){
+	for(int i = 0; i < 50; i++){
+        instanca[i].unos_trokuta();
+	}
+}
+
+void ispis(){
+	int broj = 0;
+	cout << "Redni broj\t" << "Sifra\t" << "A\t" << "B\t" << "C\t" << "Povrsina\t" << "Vrijeme unosa" << endl;
+	cout << "-------------------------------------------------------------" << endl;
+	for(int i = 0; i < 50; i++){
+		if(instanca[i].povrsina_trokuta() > 0){
+			++broj;
+			cout << broj << "\t";
+            instanca[i].ispis_trokuta();
+		}
+	}
+}
+
+void statistika(){
+	int trokuta = 0;
+	cout << "Uneseno je: " << trokut::broj_unesenih << " trokuta a njih ";
+    for(int i = 0; i < 50; i++){
+       	if(instanca[i].povrsina_trokuta() > 0)
+       		trokuta++;
+		}
+	cout << trokuta << endl;
+	trokuta = 0;
+}
+
+
+void pravokutni(){
+	cout << "Sifra\t" << "A\t" << "B\t" << "C\t" << "Povrsina\t" << "Vrijeme unosa" << endl;
+	cout << "-------------------------------------------------------------" << endl;
+	for(int i = 0; i < 50; i++){
+		instanca[i].pitagora();
+	}
+}
+ 
  
 int main(){
 
 srand(time(NULL));
-int trokuta = 0;
-int broj = 0;
-int br = 0;
+
 int jos;
 do{
     cout <<"----------------------------------------------------------------------" << endl;
@@ -79,33 +140,20 @@ do{
     cin >> jos;
     switch(jos){
         case 1:
-            // function
-						
-            for(int i = 0; i < 50; i++){
-			//	cout << "uso sam" << ++broj << " puta" << endl;
-            	instanca[i].unos_trokuta();
-			}
+            // function			
+            input();
             break;
         case 2:
             // function
-            for(int i = 0; i < 50; i++){
-			//	cout << "uso sam" << ++br << " puta" << endl;
-				if(instanca[i].povrsina_trokuta() > 0)
-            		instanca[i].ispis_trokuta();
-			}
-            break;
+            ispis();
+			break;
         case 3:
             // function
-            cout << "Uneseno je: " << trokut::broj_unesenih << " trokuta a njih ";
-            for(int i = 0; i < 50; i++){
-            	if(instanca[i].povrsina_trokuta() > 0)
-            		trokuta++;
-			}
-			cout << trokuta << endl;
-			trokuta = 0;
+            statistika();
             break;
         case 4:
             // function
+			pravokutni();
             break;
     }
 }while(jos != 9);
