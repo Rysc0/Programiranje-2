@@ -22,17 +22,18 @@ class stavka{
 
         // dekonstruktor
         ~stavka(){
-            cout <<"Dealociram..." <<endl;
+            cout << "Unistio sam: " << this->sifra << endl;
         }
         // nekako radi, samo ne diraj
-        void deleteList(){
-           stavka *current = this->next;
+        void deleteList(){  
+            stavka *current = this->next;
             while(current != NULL){
                 stavka *help = current;
                
                 current = current->next;
                 cout << "Dealokacija: " << help->sifra << endl;
                 delete help;
+                
             }
             delete current; 
             this->next = NULL;   
@@ -110,7 +111,8 @@ do{
             // function
             cout << "------------------------------------------" << endl;
             lista->ispis_liste();
-            lista->deleteList(); 
+            lista->deleteList();
+            // lista->~stavka(); 
             break;
         case 3:
             // function
