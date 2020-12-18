@@ -54,7 +54,8 @@ class stavka{
             cin >> novi->cijena;
             cout << "Kolicina: ";
             cin >> novi->kolicina;
-            novi->next = NULL; // obrisi poslje ak ne popravi destruktora
+            // novi->next = NULL; // obrisi poslje ak ne popravi destruktora
+            // linija nije potrebna, al nek ostane za sad
         }
 
         void ispis_liste(){
