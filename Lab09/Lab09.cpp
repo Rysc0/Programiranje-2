@@ -31,7 +31,7 @@ class stavka{
                 stavka *help = current;
                
                 current = current->next;
-                cout << "Dealokacija: " << help->sifra << endl;
+                // cout << "Dealokacija: " << help->sifra << endl;
                 delete help;
                 
             }
@@ -61,7 +61,7 @@ class stavka{
 
         void ispis_liste(){
             stavka *current = this->next;
-            double iznos;
+            double iznos = 0;
             cout << "Sifra\t" << "Naziv\t" << "Cijena\t" << "Kolicina\t" << endl;
             cout << "------------------------------------------" << endl;
             while(current){
@@ -81,16 +81,58 @@ class stavka{
 };
 
 stavka *lista;
+stavka **pointer_array;
 
-void alokacija(){
 
+
+void operacija(){
+    int kljuc;
+    do{
+        cout << "Unesi broj liste (0-9): ";
+        cin >> kljuc;
+    }
+    while (kljuc<0 || kljuc>9);
+        
+    pointer_array[kljuc]->unos_u_listu();
+    pointer_array[kljuc]->ispis_liste();
+    
 }
- 
+
+void alokacija_polja(){
+    cout << "ALOKUJEM" << endl;
+    pointer_array = new stavka*[10];
+    for(int i = 0; i < 10; i++){
+        pointer_array[i] = new stavka;
+    }
+    cout << "gotovo..." << endl;
+}
+
+void arrayCheck(){
+    if(pointer_array) cout << "DA" << endl;
+    else alokacija_polja();
+    operacija();
+}
+
+void dealokacija_svih(){
+    for(int i = 0; i < 10; i++){
+        if(pointer_array[i]->next){
+            pointer_array[i]->deleteList();
+        }
+    }
+    // for(int i = 0; i < 10; i++){
+    //     delete pointer_array[i];
+    // }
+    delete pointer_array;
+}
+
+
 int main(){
 
 // alokacija glave liste
 lista = new stavka;
 // lista->next = NULL;
+
+
 
 int jos;
 do{
@@ -116,9 +158,11 @@ do{
             break;
         case 3:
             // function
+            arrayCheck();
             break;
         case 4:
             // function
+            dealokacija_svih();
             break;
     }
 }while(jos != 9);
